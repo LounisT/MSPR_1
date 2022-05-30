@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace Dailybiz_API.Controllers
 {
-    public class HomeController : Controller
+    public class FactureController : Controller
     {
         // GET v1/factures/{codeclient}
         public string GetFacture(string CodeClient)
