@@ -1,4 +1,4 @@
-﻿using Dailybiz_API.Models;
+using Dailybiz_API.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,35 +17,36 @@ namespace Dailybiz_API.Controllers
         {
             Client client = new Client { };
             API.setSession();
-            string reponse = API.idev.LireTable("FB_CLIENTS", "CodeFournisseur=" + CodeClient + "", "", "0", "0", "0");
+            string reponse = API.idev.LireTable("FB_CLIENTS", "CodeClient=" + CodeClient + "", "", "0", "0", "0");
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
-
+            List<Client> ListeDeClients = new List<Client>();
+            
             for (int i = 0; i < elem.Count; i++)
             {
                 client = new Client
                 {
                     RefClient = elem[i]["REFCLIENT"].InnerText,
                     CodeClient = elem[i]["CODECLIENT"].InnerText,
-                    RaisonSociale = elem[i]["NOM"].InnerText,
+                    Nom = elem[i]["NOM"].InnerText,
                     Adresse1 = elem[i]["ADRESSE1"].InnerText,
                     Adresse2 = elem[i]["ADRESSE2"].InnerText,
-                    Adresse3 = elem[i]["ADRESSE3"].InnerText,
                     Ville = elem[i]["VILLE"].InnerText,
                     CP = elem[i]["CP"].InnerText,
                     Pays = elem[i]["PAYS"].InnerText,
-                    Tel = elem[i]["TEL"].InnerText,
                     Email = elem[i]["EMAIL"].InnerText,
-                    CodeAPE = elem[i]["CODEAPE"].InnerText,
+                    Tel = elem[i]["TEL"].InnerText,
                     Web = elem[i]["WEB"].InnerText,
                     CompteComptable = elem[i]["COMP_COMPTABLE"].InnerText
                 };
 
+                ListeDeClients.Add(client);
+
             }
 
             //client.Contacts = ListeContacts(client);
-            string json = JsonConvert.SerializeObject(client, Newtonsoft.Json.Formatting.Indented);
+            string json = JsonConvert.SerializeObject(ListeDeClients, Newtonsoft.Json.Formatting.Indented);
 
             return json;
         }
@@ -72,5 +73,12 @@ namespace Dailybiz_API.Controllers
             string cRetour = API.idev.MajTable(cXml);
             return cRetour;
         }
+        public ActionResult Index()
+        {
+            GetClient("");
+            return View();
+        }
+
+        
     }
 }
