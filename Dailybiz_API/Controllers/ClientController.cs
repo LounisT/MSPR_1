@@ -12,7 +12,8 @@ namespace Dailybiz_API.Controllers
 {
     public class ClientController : ApiController
     {
-        // GET v1/client/{CODECLIENT}
+        [HttpGet]
+        [Route("api/client/{id}")]
         public string GetClient(string CodeClient)
         {
             Client client = new Client { };
@@ -54,6 +55,8 @@ namespace Dailybiz_API.Controllers
         // PUT v1/client
 
         // Ajouter un client
+        [HttpPost]
+        [Route("api/client/add")]
         public string AddClient(string cXml)
         {
            string cRetour = API.idev.InsererTable(cXml);
@@ -61,6 +64,8 @@ namespace Dailybiz_API.Controllers
         }
 
         // Supprimer un client
+        [HttpDelete]
+        [Route("api/client/delete/{id}")]
         public string DeleteClient(string idClient)
         {
             string cRetour = API.idev.SuppresionTable("FB_Clients", idClient);
@@ -68,15 +73,12 @@ namespace Dailybiz_API.Controllers
         }
 
         // Mettre à jour un client
+        [HttpPut]
+        [Route("api/client/update/{id}")]
         public string UpdateClient(string cXml)
         {
             string cRetour = API.idev.MajTable(cXml);
             return cRetour;
-        }
-        public ActionResult Index()
-        {
-            GetClient("");
-            return View();
         }
 
         
