@@ -6,84 +6,82 @@ using System.Xml;
 
 namespace Dailybiz_API.Controllers
 {
-    public class FactureController : ApiController
+    public class ClientController : ApiController
     {
-        // GET v1/factures/{codeclient}
+        private string reponse;
         [HttpGet]
-        [Route("v1/factures/{codeclient}")]
-        public string GetFacture(string CodeClient)
+        [Route("api/Client/{id}")]
+        public string GetClient(string CodeClient)
         {
-            Facture facture = new Facture { };
+            Client client = new Client { };
             API.setSession();
-            string reponse = API.idev.LireTable("FA_FACTURES", "CodeFournisseur='" + CodeClient + "'", "", "0", "0", "0");
+            if (CodeClient != null && CodeClient != "") {          
+                reponse = API.idev.LireTable("FB_CLIENTS", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
+            } else {      
+                reponse = API.idev.LireTable("FB_CLIENTS", "1=1", "", "0", "0", "0");
+            }
+
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
-            List<Facture> ListeDeFacture = new List<Facture>();
+            List<Client> ListeDeClients = new List<Client>();
+            
             for (int i = 0; i < elem.Count; i++)
             {
-                facture = new Facture
+                client = new Client
                 {
-                    RefFacture = elem[i]["REFFACTURE"].InnerText,
-                    DateCrea = elem[i]["DATECREA"].InnerText,
-                    RefUtilisateur = elem[i]["EXP_REFUTILISATEUR"].InnerText,
-                    ObjetFacture = elem[i]["OBJETFACTURE"].InnerText,
-                    CodeFacture = elem[i]["CODEFACTURE"].InnerText,
+                    RefClient = elem[i]["REFCLIENT"].InnerText,
                     CodeClient = elem[i]["CODECLIENT"].InnerText,
-                    CodeDossier = elem[i]["CODEDOSSIER"].InnerText,
-                    NomContact = elem[i]["NOMCONTACT"].InnerText,
-                    PrenomContact = elem[i]["PRENOMCONTACT"].InnerText,
-                    RaisonSociale = elem[i]["EXP_RAISONSOCIALE"].InnerText,
+                    Nom = elem[i]["NOM"].InnerText,
                     Adresse1 = elem[i]["ADRESSE1"].InnerText,
                     Adresse2 = elem[i]["ADRESSE2"].InnerText,
-                    CP = elem[i]["CP"].InnerText,
                     Ville = elem[i]["VILLE"].InnerText,
+                    CP = elem[i]["CP"].InnerText,
                     Pays = elem[i]["PAYS"].InnerText,
-                    Reglement = elem[i]["REGLEMENT"].InnerText,
-                    CiviliteContact = elem[i]["CIVILITECONTACT"].InnerText,
-                    CodeTva = elem[i]["CODETVA"].InnerText,
-                    TotHT = elem[i]["TOTHT"].InnerText,
-                    TotTTC = elem[i]["TOTTTC"].InnerText,
-                    DateEcheance = elem[i]["DATEECHEANCE"].InnerText,
-
+                    Email = elem[i]["EMAIL"].InnerText,
+                    Tel = elem[i]["TEL"].InnerText,
+                    Web = elem[i]["WEB"].InnerText,
+                    CompteComptable = elem[i]["COMP_COMPTABLE"].InnerText
                 };
-                ListeDeFacture.Add(facture);
+
+                ListeDeClients.Add(client);
+
             }
 
-            string json = JsonConvert.SerializeObject(ListeDeFacture, Newtonsoft.Json.Formatting.Indented);
+            string json = JsonConvert.SerializeObject(ListeDeClients, Newtonsoft.Json.Formatting.Indented);
 
             return json;
         }
 
-        // PUT v1/Facture
+        // PUT v1/client
 
-        // Ajouter un Facture
-        [HttpPut]
-        [Route("v1/Facture")]
-        public string AddFacture(string cXml)
+        // Ajouter un client
+        [HttpPost]
+        [Route("api/Client/Add")]
+        public string AddClient(string cXml)
         {
-            string cRetour = API.idev.InsererTable(cXml);
-            return cRetour;
+           string cRetour = API.idev.InsererTable(cXml);
+           return cRetour;
         }
 
-        // Supprimer un Facture
+        // Supprimer un client
         [HttpDelete]
-        [Route("v1/Facture/{id}")]
-        public string DeleteFacture(string idFacture)
+        [Route("api/Client/Delete/{id}")]
+        public string DeleteClient(string idClient)
         {
-            string cRetour = API.idev.SuppresionTable("FB_Factures", idFacture);
+            string cRetour = API.idev.SuppresionTable("FB_Clients", idClient);
             return cRetour;
         }
 
-        // Mettre à jour un Facture
-        [HttpGet]
-        [Route("v1/Facture/{id}")]
-        public string UpdateFacture(string cXml)
+        // Mettre à jour un client
+        [HttpPut]
+        [Route("api/Client/Update")]
+        public string UpdateClient(string cXml)
         {
             string cRetour = API.idev.MajTable(cXml);
             return cRetour;
         }
 
+        
     }
-
 }
