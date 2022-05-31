@@ -8,19 +8,13 @@ namespace Dailybiz_API.Controllers
 {
     public class ClientController : ApiController
     {
-        private string reponse;
         [HttpGet]
         [Route("api/Client/{id}")]
         public string GetClient(string CodeClient)
         {
             Client client = new Client { };
             API.setSession();
-            if (CodeClient != null && CodeClient != "") {          
-                reponse = API.idev.LireTable("FB_CLIENTS", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
-            } else {      
-                reponse = API.idev.LireTable("FB_CLIENTS", "1=1", "", "0", "0", "0");
-            }
-
+            string reponse = API.idev.LireTable("FB_CLIENTS", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
@@ -53,11 +47,50 @@ namespace Dailybiz_API.Controllers
             return json;
         }
 
-        // PUT v1/client
+        [HttpGet]
+        [Route("api/ContactDuClient/{CodeClient}")]
+        public string GetContact(string CodeClient)
+        {
+            Contact contact = new Contact { };
+            API.setSession();
+            string reponse = API.idev.LireTable("FB_Contacts", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(reponse);
+            XmlNodeList elem = doc.GetElementsByTagName("FICHE");
+            List<Contact> ListeDeContacts = new List<Contact>();
+
+            for (int i = 0; i < elem.Count; i++)
+            {
+                contact = new Contact
+                {
+                    RefContact = elem[i]["REFCONTACT"].InnerText,
+                    CodeClient = elem[i]["CODECLIENT"].InnerText,
+                    Nom = elem[i]["NOM"].InnerText,
+                    Prenom = elem[i]["PRENOM"].InnerText,
+                    Tel = elem[i]["TEL"].InnerText,
+                    Fonction = elem[i]["FONCTION"].InnerText,
+                    Email = elem[i]["EMAIL"].InnerText,
+                    Adresse1 = elem[i]["ADRESSE1"].InnerText,
+                    Adresse2 = elem[i]["ADRESSE2"].InnerText,
+                    Ville = elem[i]["VILLE"].InnerText,
+                    CP = elem[i]["CP"].InnerText,
+                    Pays = elem[i]["PAYS"].InnerText,
+                    Commentaire = elem[i]["COMMENTAIRE"].InnerText
+                };
+
+                ListeDeContacts.Add(contact);
+
+            }
+
+            string json = JsonConvert.SerializeObject(ListeDeContacts/*contact*/, Newtonsoft.Json.Formatting.Indented);
+
+            return json;
+        }
+
 
         // Ajouter un client
         [HttpPost]
-        [Route("api/Client/Add")]
+        [Route("api/Client/Add/{cXml}")]
         public string AddClient(string cXml)
         {
            string cRetour = API.idev.InsererTable(cXml);
@@ -66,7 +99,7 @@ namespace Dailybiz_API.Controllers
 
         // Supprimer un client
         [HttpDelete]
-        [Route("api/Client/Delete/{id}")]
+        [Route("api/Client/Delete/{idClient}")]
         public string DeleteClient(string idClient)
         {
             string cRetour = API.idev.SuppresionTable("FB_Clients", idClient);
@@ -75,7 +108,7 @@ namespace Dailybiz_API.Controllers
 
         // Mettre à jour un client
         [HttpPut]
-        [Route("api/Client/Update")]
+        [Route("api/Client/Update/{cXml}")]
         public string UpdateClient(string cXml)
         {
             string cRetour = API.idev.MajTable(cXml);
