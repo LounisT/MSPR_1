@@ -1,9 +1,6 @@
 using Dailybiz_API.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
 using System.Xml;
 
@@ -11,14 +8,20 @@ namespace Dailybiz_API.Controllers
 {
     public class FactureController : ApiController
     {
+        private string reponse;
+
         // GET v1/factures/{codeclient}
         [HttpGet]
-        [Route("v1/factures/{codeclient}")]
+        [Route("v1/Factures/{codeclient}")]
         public string GetFacture(string CodeClient)
         {
             Facture facture = new Facture { };
             API.setSession();
-            string reponse = API.idev.LireTable("FA_FACTURES", "CodeFournisseur='" + CodeClient + "'", "", "0", "0", "0");
+            if (CodeClient != null && CodeClient != "") {           
+                reponse = API.idev.LireTable("FA_FACTURES", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
+            } else {                       
+                reponse = API.idev.LireTable("FA_FACTURES", "1=1", "", "0", "0", "0");
+            }
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
@@ -79,8 +82,8 @@ namespace Dailybiz_API.Controllers
         }
 
         // Mettre à jour un Facture
-        [HttpGet]
-        [Route("v1/Facture/Update/{id}")]
+        [HttpPost]
+        [Route("v1/Facture/Update")]
         public string UpdateFacture(string cXml)
         {
             string cRetour = API.idev.MajTable(cXml);
