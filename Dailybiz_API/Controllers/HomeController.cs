@@ -18,7 +18,7 @@ namespace Dailybiz_API.Controllers
         {
             Facture facture = new Facture { };
             API.setSession();
-            string reponse = API.idev.LireTable("FA_FACTURES", "CodeFournisseur=" + CodeClient + "", "", "0", "0", "0");
+            string reponse = API.idev.LireTable("FA_FACTURES", "CodeFournisseur='" + CodeClient + "'", "", "0", "0", "0");
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
