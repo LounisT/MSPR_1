@@ -62,7 +62,7 @@ namespace Dailybiz_API.Controllers
 
         // Ajouter un Facture
         [HttpPut]
-        [Route("v1/Facture")]
+        [Route("v1/Facture/Add")]
         public string AddFacture(string cXml)
         {
             string cRetour = API.idev.InsererTable(cXml);
@@ -71,7 +71,7 @@ namespace Dailybiz_API.Controllers
 
         // Supprimer un Facture
         [HttpDelete]
-        [Route("v1/Facture/{id}")]
+        [Route("v1/Facture/Delete/{id}")]
         public string DeleteFacture(string idFacture)
         {
             string cRetour = API.idev.SuppresionTable("FB_Factures", idFacture);
@@ -80,7 +80,7 @@ namespace Dailybiz_API.Controllers
 
         // Mettre à jour un Facture
         [HttpGet]
-        [Route("v1/Facture/{id}")]
+        [Route("v1/Facture/Update/{id}")]
         public string UpdateFacture(string cXml)
         {
             string cRetour = API.idev.MajTable(cXml);
