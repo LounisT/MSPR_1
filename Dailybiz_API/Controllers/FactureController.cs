@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
 using System.Xml;
 
 namespace Dailybiz_API.Controllers
 {
-    public class FactureController : Controller
+    public class FactureController : ApiController
     {
         // GET v1/factures/{codeclient}
         [HttpGet]
@@ -86,11 +86,7 @@ namespace Dailybiz_API.Controllers
             string cRetour = API.idev.MajTable(cXml);
             return cRetour;
         }
-        public ActionResult Index()
-        {
-            GetFacture("");
-            return View();
-        }
+
     }
 
 }
