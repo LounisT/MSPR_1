@@ -244,7 +244,7 @@ namespace Dailybiz_API.Controllers
             }
             if (tel != null && tel != "")
             {
-                ClientXML = ClientXML.Replace("[Tel]", tel);
+                ClientXML = ClientXML.Replace("[TEL]", tel);
             }
             if (Web != null && Web != "")
             {
