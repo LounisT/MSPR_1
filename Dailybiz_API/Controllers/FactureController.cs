@@ -9,19 +9,27 @@ namespace Dailybiz_API.Controllers
     public class FactureController : ApiController
     {
         private string reponse;
+        private object authentification;
 
-        // GET v1/factures/{codeclient}
         [HttpGet]
         [Route("v1/Factures/{codeclient}")]
         public string GetFacture(string CodeClient)
         {
             Facture facture = new Facture { };
-            API.setSession();
-            if (CodeClient != null && CodeClient != "") {           
-                reponse = API.idev.LireTable("FA_FACTURES", "CodeClient='" + CodeClient + "'", "", "0", "0", "0");
-            } else {                       
-                reponse = API.idev.LireTable("FA_FACTURES", "1=1", "", "0", "0", "0");
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            try
+            {
+                API.setSession();
             }
+            catch
+            {
+                return "Session Invalide";
+            }
+            //if (CodeClient != null && CodeClient != "") {           
+                reponse = API.idev.LireTable("FA_FACTURES", "Validee = 'Oui' and Comptabilisee = 'Oui' and  CodeClient='" + CodeClient + "'", "", "0", "0", "0");
+            //} else {                       
+            //    reponse = API.idev.LireTable("FA_FACTURES", "1=1 and Validee = 'Oui' and Comptabilisee = 'Oui'", "", "0", "0", "0");
+            //}
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(reponse);
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
