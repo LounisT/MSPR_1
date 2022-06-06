@@ -353,6 +353,7 @@ namespace Dailybiz_API.Controllers
 
         
         //CONTACT
+        //Read les contacts d'un client
         [HttpGet]
         [Route("api/ContactDuClient/{CodeClient}")]
         public string GetContact(string CodeClient)
@@ -401,143 +402,10 @@ namespace Dailybiz_API.Controllers
             return json;
         }
 
-        // Ajouter un contact
-        [HttpGet]
-        [Route("api/ContactDuClient/Add/RefContact={RefContact}/CodeClient={CodeClient}/Nom={Nom}/Prenom={Prenom}/Tel={Tel}/Email={Email}/Fonction={Fonction}/Adresse1={Adresse1}/Ville={Ville}/CP={CP}/Pays={Pays}")]
-        public string AddContact(string RefContact, string CodeClient, string Nom, string Prenom, string tel, string Email, string Fonction, string Adresse1, string Ville, string CP, string Pays)
-        {
-            
-            string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
-            <FB_CONTACTS >
-            <FICHE >
-            <ADRESSE1>[ADRESSE1]</ADRESSE1>
-            <ADRESSE2/>
-            <ADRESSE3/>
-            <ADRESSEPRICINPAL/>
-            <CIVILITE/>
-            <CODECLIENT >[CODECLIENT] </CODECLIENT >
-            <CODEORIGINE > ORIGINE01 </CODEORIGINE >
-            <COMMENTAIRE/>
-            <CP>[CP]</CP>
-            <CRITERE1/>
-            <CRITERE2/>
-            <CRITERE3/>
-            <CRITERE4/>
-            <CRITERE5/>
-            <CRITERE6/>
-            <CRITERE7/>
-            <CRITERE8/>
-            <CRITERE9/>
-            <EMAIL>[EMAIL]</EMAIL >
-            <FAX > 0133120001 </FAX >
-            <FICHIERARCHIVER/>
-            <FONCTION>[FONCTION]</FONCTION>
-            <IDE_REFUTILISATEUR/>
-            <IDENTIFIANTSKYPE/>
-            <MOBILE/>
-            <NOM>[NOM]</NOM>
-            <NUMEROSKYPE/>
-            <PAYS>[PAYS]</PAYS>
-            <PRENOM>[PRENOM]</PRENOM>
-            <PRONTO_RAISONSOCIALE/>
-            <PRONTO_TYPELIVRAISON/>
-            <REFCONTACT>[REFCONTACT]</REFCONTACT>
-            <REFDUPLICATION/>
-            <REFENVOI/>
-            <TEL>[TEL]</TEL>
-            <TRAITEMENT/>
-            <VILLE>[VILLE]</VILLE>
-            <XPE_REFUTILISATEUR/>
-            <EXP_CLIENTARCHIVE > NON </EXP_CLIENTARCHIVE >
-            <EXP_CODEFAMILLECLIENT > FAM_CLI03 </EXP_CODEFAMILLECLIENT >
-            <EXP_CODEVENDEUR > VENDEUR02 </EXP_CODEVENDEUR >
-            <EXP_CT1FICHE/>
-            <EXP_CT2FICHE/>
-            <EXP_CT3FICHE/>
-            <EXP_CT4FICHE/>
-            <EXP_CT5FICHE/>
-            <EXP_CT6FICHE/>
-            <EXP_CT7FICHE/>
-            <EXP_CT8FICHE/>
-            <EXP_CT9FICHE/>
-            <EXP_DATEANNIVERSAIRE/>
-            <EXP_DATEARCHIVAGE/>
-            <EXP_IDYLIS_HMB_CONTACT_AGENDAS/>
-            <EXP_IDYLIS_HMB_CONTACT_CARTEVOEUX/>
-            <EXP_IDYLIS_HMB_CONTACT_CHAMPAGNE/>
-            <EXP_IDYLIS_HMB_CONTACT_CHOCOLATS/>
-            <EXP_IDYLIS_HMB_CONTACT_CORBEILLE/>
-            <EXP_IDYLIS_HMB_CONTACT_MANIFESTATIONS/>
-            <EXP_IDYLIS_HMB_CONTACT_VIP/>
-            <EXP_IDYLIS_HMB_EFFECTIF_CADRES/>
-            <EXP_IDYLIS_HMB_EFFECTIF_ENSEMBLE/>
-            <EXP_IDYLIS_HMB_EFFECTIF_NONCADRES/>
-            <EXP_IDYLIS_HMB_EFFECTIF_RETRAITES/>
-            <EXP_IDYLIS_HMB_EFFECTIF_TNS/>
-            <EXP_IDYLIS_HMB_EFFECTIF_VRP/>
-            <EXP_IDYLIS_HMB_EFFECTIFS/>
-            <EXP_IDYLISCOMPTEURLIGNE > 1 </EXP_IDYLISCOMPTEURLIGNE >
-            <EXP_SITE/>
-            <EXP_SOCIETE > AUGEREAUSARL </EXP_SOCIETE >
-            <EXP_TVA_INTRA > FR78523000000 </EXP_TVA_INTRA >
-            </FICHE >
-            </FB_CONTACTS >";
-
-            if (RefContact != null && RefContact != "")
-            {
-                ClientXML = ClientXML.Replace("[REFCONTACT]", RefContact);
-            }
-
-            if (CodeClient != null && CodeClient != "")
-            {
-                ClientXML = ClientXML.Replace("[CODECLIENT]", CodeClient);
-            }
-            if (Nom != null && Nom != "")
-            {
-                ClientXML = ClientXML.Replace("[NOM]", Nom);
-            }
-            if (Prenom != null && Prenom != "")
-            {
-                ClientXML = ClientXML.Replace("[PRENOM]", Prenom);
-            }
-            if (tel != null && tel != "")
-            {
-                ClientXML = ClientXML.Replace("[TEL]", tel);
-            }
-            if (Email != null && Email != "")
-            {
-                ClientXML = ClientXML.Replace("[EMAIL]", Email);
-            }
-            if (Fonction != null && Fonction != "")
-            {
-                ClientXML = ClientXML.Replace("[FONCTION]", Fonction);
-            }
-            if (Adresse1 != null && Adresse1 != "")
-            {
-                ClientXML = ClientXML.Replace("[ADRESSE1]", Adresse1);
-            }
-            
-            if (Ville != null && Ville != "")
-            {
-                ClientXML = ClientXML.Replace("[VILLE]", Ville);
-            }
-            if (CP != null && CP != "")
-            {
-                ClientXML = ClientXML.Replace("[CP]", CP);
-            }
-            if (Pays != null && Pays != "")
-            {
-                ClientXML = ClientXML.Replace("[PAYS]", Pays);
-            }
-
-            API.setSession();
-            string cRetour = API.idev.InsererTable(ClientXML);
-            return cRetour;
-        }
-
+        // ajouter un client
         [HttpPost]
         [Route("api/ContactDuClient/Add")]
-        public string MajContact(Contact contact)
+        public string Add(Contact contact)
         {
 
             string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -668,13 +536,142 @@ namespace Dailybiz_API.Controllers
             return cRetour;
         }
 
-        // Supprimer un client
-        [HttpGet]
-        [Route("api/ContactDuClient/Delete/{refContact}")]
-        public string DeleteContact(string refContact)
+
+
+        // Mettre à jour un Contact
+        [HttpPost]
+        [Route("api/ContactDuClient/Update")]
+        public string UpdateContact(Contact contact)
+        {
+            string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            <FB_CONTACTS>
+            <FICHE>
+            <ADRESSE1>[ADRESSE1]</ADRESSE1>
+            <ADRESSE2>[ADRESSE2]</ADRESSE2>
+            <CODECLIENT>[CODECLIENT]</CODECLIENT>
+            <CP>[CP]</CP>
+            <EMAIL>[EMAIL]</EMAIL>
+            <FONTION>[FONTION]</FONTION>
+            <NOM>[NOM]</NOM>
+            <PAYS>[PAYS]</PAYS>
+            <REFCONTACT>[REFCONTACT]</REFCONTACT>
+            <TEL>[TEL]</TEL>   
+            <VILLE>[VILLE]</VILLE>
+            </FICHE>
+            </FB_CONTACTS>";
+
+            if (contact.RefContact != null && contact.RefContact != "")
+            {
+                ClientXML = ClientXML.Replace("[REFCONTACT]", contact.RefContact);
+            }
+            if (contact.CodeClient != null && contact.CodeClient != "")
+            {
+                ClientXML = ClientXML.Replace("[CODECLIENT]", contact.CodeClient);
+            }
+            if (contact.Nom != null && contact.Nom != "")
+            {
+                ClientXML = ClientXML.Replace("[NOM]", contact.Nom);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<NOM>[NOM]</NOM>", "");
+            }
+
+            if (contact.Prenom != null && contact.Prenom != "")
+            {
+                ClientXML = ClientXML.Replace("[PRENOM]", contact.Prenom);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<PRENOM>[PRENOM]</PRENOM>", "");
+            }
+
+            if (contact.Tel != null && contact.Tel != "")
+            {
+                ClientXML = ClientXML.Replace("[TEL]", contact.Tel);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<TEL>[TEL]</TEL>", "");
+            }
+
+            if (contact.Email != null && contact.Email != "")
+            {
+                ClientXML = ClientXML.Replace("[EMAIL]", contact.Email);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<EMAIL>[EMAIL]</EMAIL>", "");
+            }
+
+            if (contact.Fonction != null && contact.Fonction != "")
+            {
+                ClientXML = ClientXML.Replace("[FONCTION]", contact.Fonction);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<FONCTION>[FONCTION]</FONCTION>", "");
+            }
+
+            if (contact.Adresse1 != null && contact.Adresse1 != "")
+            {
+                ClientXML = ClientXML.Replace("[ADRESSE1]", contact.Adresse1);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<ADRESSE1>[ADRESSE1]</ADRESSE1>", "");
+            }
+
+            if (contact.Adresse2 != null && contact.Adresse2 != "")
+            {
+                ClientXML = ClientXML.Replace("[ADRESSE2]", contact.Adresse2);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<ADRESSE2>[ADRESSE2]</ADRESSE2>", "");
+            }
+
+            if (contact.Ville != null && contact.Ville != "")
+            {
+                ClientXML = ClientXML.Replace("[VILLE]", contact.Ville);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<VILLE>[VILLE]</VILLE>", "");
+            }
+
+            if (contact.CP != null && contact.CP != "")
+            {
+                ClientXML = ClientXML.Replace("[CP]", contact.CP);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<CP>[CP]</CP>", "");
+            }
+
+            if (contact.Pays != null && contact.Pays != "")
+            {
+                ClientXML = ClientXML.Replace("[PAYS]", contact.Pays);
+            }
+            else
+            {
+                ClientXML = ClientXML.Replace("<PAYS>[PAYS]</PAYS>", "");
+            }
+
+
+            API.setSession();
+            string cRetour = API.idev.MajTable(ClientXML);
+            return cRetour;
+        }        
+
+        
+        // Supprimer un contact
+        [HttpPost]
+        [Route("api/ContactDuClient/Delete")]
+        public string DeleteContact(Contact Contact)
         {
             API.setSession();
-            string cRetour = API.idev.SuppresionTable("FB_Contacts", refContact);
+            string cRetour = API.idev.SuppresionTable("FB_Contacts", Contact.RefContact);
             return cRetour;
         }
 
