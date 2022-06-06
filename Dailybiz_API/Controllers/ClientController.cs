@@ -2,7 +2,6 @@ using Dailybiz_API.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Web.Http;
-using System.Web.Providers.Entities;
 using System.Xml;
 using Dailybiz_API.com.dailybiz.exe;
 using System.Web;
@@ -31,7 +30,7 @@ namespace Dailybiz_API.Controllers
             XmlNodeList elem = doc.GetElementsByTagName("FICHE");
             List<Client> ListeDeClients = new List<Client>();
 
-            for (int i = 0; i < elem.Count; i++)
+            for (int i = 0; i <elem.Count; i++)
             {
                 client = new Client
                 {
@@ -58,15 +57,11 @@ namespace Dailybiz_API.Controllers
             return json;
         }
 
-
         // Ajouter un client
-        [HttpGet]
-        [Route("api/Client/Add/RefClient={RefClient}/CodeClient={CodeClient}/Nom={Nom}/Adresse1={Adresse1}/Adresse2={Adresse2}/Ville={Ville}/CP={CP}/Pays={Pays}/Web={Web}/Tel={Tel}/Email={Email}/CompteComptable={CompteComptable}")]
-        public string AddClient(string RefClient, string CodeClient, string Nom, string Adresse1, string Adresse2, string Ville, string CP, string Pays, string Web,string tel, string Email, string CompteComptable)
+        [HttpPost]
+        [Route("api/Client/Add")]
+        public string AddClient(Client client)
         {
-
-
-
             string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
             <FB_CLIENTS>
             <FICHE>
@@ -210,53 +205,53 @@ namespace Dailybiz_API.Controllers
             </FICHE>
             </FB_CLIENTS>";
 
-            if (RefClient != null && RefClient != "")
+            if (client.RefClient != null && client.RefClient != "")
             {
-                ClientXML = ClientXML.Replace("[REFCLIENT]", RefClient);
+                ClientXML = ClientXML.Replace("[REFCLIENT]", client.RefClient);
             }
-            if (CodeClient != null && CodeClient != "")
+            if (client.CodeClient != null && client.CodeClient != "")
             {
-                ClientXML = ClientXML.Replace("[CODECLIENT]", CodeClient);
+                ClientXML = ClientXML.Replace("[CODECLIENT]", client.CodeClient);
             }
-            if (Nom != null && Nom != "")
+            if (client.Nom != null && client.Nom != "")
             {            
-                ClientXML = ClientXML.Replace("[NOM]", Nom);
+                ClientXML = ClientXML.Replace("[NOM]", client.Nom);
             }
-            if (Adresse1 != null && Adresse1 != "")
+            if (client.Adresse1 != null && client.Adresse1 != "")
             {
-                ClientXML = ClientXML.Replace("[ADRESSE1]", Adresse1);
+                ClientXML = ClientXML.Replace("[ADRESSE1]", client.Adresse1);
             }
-            if (Adresse2 != null && Adresse2 != "")
+            if (client.Adresse2 != null && client.Adresse2 != "")
             {
-                ClientXML = ClientXML.Replace("[ADRESSE2]", Adresse2);   
+                ClientXML = ClientXML.Replace("[ADRESSE2]", client.Adresse2);   
             }
-            if (Ville != null && Ville != "")
+            if (client.Ville != null && client.Ville != "")
             {   
-                ClientXML = ClientXML.Replace("[VILLE]", Ville);
+                ClientXML = ClientXML.Replace("[VILLE]", client.Ville);
             }
-            if (CP != null && CP != "")
+            if (client.CP != null && client.CP != "")
             {   
-                ClientXML = ClientXML.Replace("[CP]", CP);
+                ClientXML = ClientXML.Replace("[CP]", client.CP);
             }
-            if (Pays != null && Pays != "")
+            if (client.Pays != null && client.Pays != "")
             {
-                ClientXML = ClientXML.Replace("[PAYS]", Pays);
+                ClientXML = ClientXML.Replace("[PAYS]", client.Pays);
             }
-            if (tel != null && tel != "")
+            if (client.Tel != null && client.Tel != "")
             {
-                ClientXML = ClientXML.Replace("[TEL]", tel);
+                ClientXML = ClientXML.Replace("[TEL]", client.Tel);
             }
-            if (Web != null && Web != "")
+            if (client.Web != null && client.Web != "")
             {
-                ClientXML = ClientXML.Replace("[WEB]", Web);
+                ClientXML = ClientXML.Replace("[WEB]", client.Web);
             }
-            if (Email != null && Email != "")
+            if (client.Email != null && client.Email != "")
             {
-                ClientXML = ClientXML.Replace("[EMAIL]", Web);
+                ClientXML = ClientXML.Replace("[EMAIL]", client.Web);
             }
-            if (CompteComptable != null && CompteComptable != "")
+            if (client.CompteComptable != null && client.CompteComptable != "")
             {
-                ClientXML = ClientXML.Replace("[COMPTECOMPTABLE]", Web);
+                ClientXML = ClientXML.Replace("[COMPTECOMPTABLE]", client.CompteComptable);
             }
                 
 
@@ -267,24 +262,97 @@ namespace Dailybiz_API.Controllers
         }
 
         // Supprimer un client
-        [HttpPut]
+        [HttpPost]
         [Route("api/Client/Delete")]
-        public string DeleteClient(string idClient)
+        public string DeleteClient(Client client)
         {
-            string cRetour = API.idev.SuppresionTable("FB_Clients", idClient);
+            API.setSession();
+            string cRetour = API.idev.SuppresionTable("FB_Clients", client.CodeClient);
             return cRetour;
         }
 
         // Mettre à jour un client
-        [HttpPut]
+        [HttpPost]
         [Route("api/Client/Update")]
-        public string UpdateClient(string cXml)
+        public string UpdateClient(Client client)
         {
-            string cRetour = API.idev.MajTable(cXml);
+            string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            <FB_CLIENTS>
+            <FICHE>
+            <ADRESSE1>[ADRESSE1]</ADRESSE1>
+            <CODECLIENT>[CODECLIENT]</CODECLIENT>
+            <COMP_COMPTABLE>[COMPTECOMPTABLE]</COMP_COMPTABLE>
+            <CP>[CP]</CP>
+            <EMAIL>[EMAIL]</EMAIL>
+            <FAX>0133120001</FAX>
+            <NOM>[NOM]</NOM>
+            <PAYS>[PAYS]</PAYS>
+            <REFCLIENT>[REFCLIENT]</REFCLIENT>
+            <TEL>[TEL]</TEL>   
+            <VILLE>[VILLE]</VILLE>
+            <WEB>[WEB]</WEB>
+            </FICHE>
+            </FB_CLIENTS>";
+
+            if (client.RefClient != null && client.RefClient != "")
+            {
+                ClientXML = ClientXML.Replace("[REFCLIENT]", client.RefClient);
+            }
+            if (client.CodeClient != null && client.CodeClient != "")
+            {
+                ClientXML = ClientXML.Replace("[CODECLIENT]", client.CodeClient);
+            }
+            if (client.Nom != null && client.Nom != "")
+            {
+                ClientXML = ClientXML.Replace("[NOM]", client.Nom);
+            }
+            if (client.Adresse1 != null && client.Adresse1 != "")
+            {
+                ClientXML = ClientXML.Replace("[ADRESSE1]", client.Adresse1);
+            }
+            if (client.Adresse2 != null && client.Adresse2 != "")
+            {
+                ClientXML = ClientXML.Replace("[ADRESSE2]", client.Adresse2);
+            }
+            if (client.Ville != null && client.Ville != "")
+            {
+                ClientXML = ClientXML.Replace("[VILLE]", client.Ville);
+            }
+            if (client.CP != null && client.CP != "")
+            {
+                ClientXML = ClientXML.Replace("[CP]", client.CP);
+            }
+            if (client.Pays != null && client.Pays != "")
+            {
+                ClientXML = ClientXML.Replace("[PAYS]", client.Pays);
+            }
+            if (client.Tel != null && client.Tel != "")
+            {
+                ClientXML = ClientXML.Replace("[TEL]", client.Tel);
+            }
+            if (client.Web != null && client.Web != "")
+            {
+                ClientXML = ClientXML.Replace("[WEB]", client.Web);
+            }
+            if (client.Email != null && client.Email != "")
+            {
+                ClientXML = ClientXML.Replace("[EMAIL]", client.Web);
+            }
+            if (client.CompteComptable != null && client.CompteComptable != "")
+            {
+                ClientXML = ClientXML.Replace("[COMPTECOMPTABLE]", client.Web);
+            }
+
+
+            API.setSession();
+            string cRetour = API.idev.MajTable(ClientXML);
             return cRetour;
         }
 
 
+
+        
+        //CONTACT
         [HttpGet]
         [Route("api/ContactDuClient/{CodeClient}")]
         public string GetContact(string CodeClient)
@@ -338,85 +406,86 @@ namespace Dailybiz_API.Controllers
         [Route("api/ContactDuClient/Add/RefContact={RefContact}/CodeClient={CodeClient}/Nom={Nom}/Prenom={Prenom}/Tel={Tel}/Email={Email}/Fonction={Fonction}/Adresse1={Adresse1}/Ville={Ville}/CP={CP}/Pays={Pays}")]
         public string AddContact(string RefContact, string CodeClient, string Nom, string Prenom, string tel, string Email, string Fonction, string Adresse1, string Ville, string CP, string Pays)
         {
+            
             string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
-            <FB_CONTACTS>
-                <FICHE>
-                    <ADRESSE1>[ADRESSE1]</ADRESSE1>
-                    <ADRESSE2></ADRESSE2>
-                    <ADRESSE3></ADRESSE3>
-                    <ADRESSEPRICINPAL></ADRESSEPRICINPAL>
-                    <CIVILITE></CIVILITE>
-                    <CODECLIENT>[CODECLIENT]</CODECLIENT>
-                    <CODEORIGINE>ORIGINE01</CODEORIGINE>
-                    <COMMENTAIRE>[COMMENTAIRE]</COMMENTAIRE>
-                    <CP>[CP]></CP>
-                    <CRITERE1></CRITERE1>
-                    <CRITERE2></CRITERE2>
-                    <CRITERE3></CRITERE3>
-                    <CRITERE4></CRITERE4>
-                    <CRITERE5></CRITERE5>
-                    <CRITERE6></CRITERE6>
-                    <CRITERE7></CRITERE7>
-                    <CRITERE8></CRITERE8>
-                    <CRITERE9></CRITERE9>
-                    <EMAIL>[EMAIL]</EMAIL>
-                    <FAX></FAX>
-                    <FICHIERARCHIVER></FICHIERARCHIVER>
-                    <FONCTION>[FONCTION]</FONCTION>
-                    <IDE_REFUTILISATEUR></IDE_REFUTILISATEUR>
-                    <IDENTIFIANTSKYPE></IDENTIFIANTSKYPE>
-                    <MOBILE></MOBILE>
-                    <NOM>[NOM]</NOM>
-                    <NUMEROSKYPE></NUMEROSKYPE>
-                    <PAYS>[PAYS]</PAYS>
-                    <PRENOM>[PRENOM]</PRENOM>
-                    <PRONTO_RAISONSOCIALE></PRONTO_RAISONSOCIALE>
-                    <PRONTO_TYPELIVRAISON></PRONTO_TYPELIVRAISON>
-                    <REFCONTACT>[REFCONTACT]</REFCONTACT>
-                    <REFDUPLICATION></REFDUPLICATION>
-                    <REFENVOI></REFENVOI>
-                    <TEL>[TEL]</TEL>
-                    <TRAITEMENT></TRAITEMENT>
-                    <VILLE>[VILLE]</VILLE>
-                    <XPE_REFUTILISATEUR></XPE_REFUTILISATEUR>
-                    <EXP_CLIENTARCHIVE>NON</EXP_CLIENTARCHIVE>
-                    <EXP_CODEFAMILLECLIENT>FAM_CLI03</EXP_CODEFAMILLECLIENT>
-                    <EXP_CODEVENDEUR>VENDEUR02</EXP_CODEVENDEUR>
-                    <EXP_CT1FICHE></EXP_CT1FICHE>
-                    <EXP_CT2FICHE></EXP_CT2FICHE>
-                    <EXP_CT3FICHE></EXP_CT3FICHE>
-                    <EXP_CT4FICHE></EXP_CT4FICHE>
-                    <EXP_CT5FICHE></EXP_CT5FICHE>
-                    <EXP_CT6FICHE></EXP_CT6FICHE>
-                    <EXP_CT7FICHE></EXP_CT7FICHE>
-                    <EXP_CT8FICHE></EXP_CT8FICHE>
-                    <EXP_CT9FICHE></EXP_CT9FICHE>
-                    <EXP_DATEANNIVERSAIRE></EXP_DATEANNIVERSAIRE>
-                    <EXP_DATEARCHIVAGE></EXP_DATEARCHIVAGE>
-                    <EXP_IDYLIS_HMB_CONTACT_AGENDAS></EXP_IDYLIS_HMB_CONTACT_AGENDAS>
-                    <EXP_IDYLIS_HMB_CONTACT_CARTEVOEUX></EXP_IDYLIS_HMB_CONTACT_CARTEVOEUX>
-                    <EXP_IDYLIS_HMB_CONTACT_CHAMPAGNE></EXP_IDYLIS_HMB_CONTACT_CHAMPAGNE>
-                    <EXP_IDYLIS_HMB_CONTACT_CHOCOLATS></EXP_IDYLIS_HMB_CONTACT_CHOCOLATS>
-                    <EXP_IDYLIS_HMB_CONTACT_CORBEILLE></EXP_IDYLIS_HMB_CONTACT_CORBEILLE>
-                    <EXP_IDYLIS_HMB_CONTACT_MANIFESTATIONS></EXP_IDYLIS_HMB_CONTACT_MANIFESTATIONS>
-                    <EXP_IDYLIS_HMB_CONTACT_VIP></EXP_IDYLIS_HMB_CONTACT_VIP>
-                    <EXP_IDYLIS_HMB_EFFECTIF_CADRES></EXP_IDYLIS_HMB_EFFECTIF_CADRES>
-                    <EXP_IDYLIS_HMB_EFFECTIF_ENSEMBLE></EXP_IDYLIS_HMB_EFFECTIF_ENSEMBLE>
-                    <EXP_IDYLIS_HMB_EFFECTIF_NONCADRES></EXP_IDYLIS_HMB_EFFECTIF_NONCADRES>
-                    <EXP_IDYLIS_HMB_EFFECTIF_RETRAITES></EXP_IDYLIS_HMB_EFFECTIF_RETRAITES>
-                    <EXP_IDYLIS_HMB_EFFECTIF_TNS></EXP_IDYLIS_HMB_EFFECTIF_TNS>
-                    <EXP_IDYLIS_HMB_EFFECTIF_VRP></EXP_IDYLIS_HMB_EFFECTIF_VRP>
-                    <EXP_IDYLIS_HMB_EFFECTIFS></EXP_IDYLIS_HMB_EFFECTIFS>
-                    <EXP_IDYLISCOMPTEURLIGNE>1></EXP_IDYLISCOMPTEURLIGNE>
-                    <EXP_SITE></EXP_SITE>
-                    <EXP_SOCIETE>AUGEREAU SARL</EXP_SOCIETE>
-                    <EXP_TVA_INTRA>FR78523000000</EXP_TVA_INTRA>
-                </FICHE>
-            </FB_CONTACTS>";
+            <FB_CONTACTS >
+            <FICHE >
+            <ADRESSE1>[ADRESSE1]</ADRESSE1>
+            <ADRESSE2/>
+            <ADRESSE3/>
+            <ADRESSEPRICINPAL/>
+            <CIVILITE/>
+            <CODECLIENT >[CODECLIENT] </CODECLIENT >
+            <CODEORIGINE > ORIGINE01 </CODEORIGINE >
+            <COMMENTAIRE/>
+            <CP>[CP]</CP>
+            <CRITERE1/>
+            <CRITERE2/>
+            <CRITERE3/>
+            <CRITERE4/>
+            <CRITERE5/>
+            <CRITERE6/>
+            <CRITERE7/>
+            <CRITERE8/>
+            <CRITERE9/>
+            <EMAIL>[EMAIL]</EMAIL >
+            <FAX > 0133120001 </FAX >
+            <FICHIERARCHIVER/>
+            <FONCTION>[FONCTION]</FONCTION>
+            <IDE_REFUTILISATEUR/>
+            <IDENTIFIANTSKYPE/>
+            <MOBILE/>
+            <NOM>[NOM]</NOM>
+            <NUMEROSKYPE/>
+            <PAYS>[PAYS]</PAYS>
+            <PRENOM>[PRENOM]</PRENOM>
+            <PRONTO_RAISONSOCIALE/>
+            <PRONTO_TYPELIVRAISON/>
+            <REFCONTACT>[REFCONTACT]</REFCONTACT>
+            <REFDUPLICATION/>
+            <REFENVOI/>
+            <TEL>[TEL]</TEL>
+            <TRAITEMENT/>
+            <VILLE>[VILLE]</VILLE>
+            <XPE_REFUTILISATEUR/>
+            <EXP_CLIENTARCHIVE > NON </EXP_CLIENTARCHIVE >
+            <EXP_CODEFAMILLECLIENT > FAM_CLI03 </EXP_CODEFAMILLECLIENT >
+            <EXP_CODEVENDEUR > VENDEUR02 </EXP_CODEVENDEUR >
+            <EXP_CT1FICHE/>
+            <EXP_CT2FICHE/>
+            <EXP_CT3FICHE/>
+            <EXP_CT4FICHE/>
+            <EXP_CT5FICHE/>
+            <EXP_CT6FICHE/>
+            <EXP_CT7FICHE/>
+            <EXP_CT8FICHE/>
+            <EXP_CT9FICHE/>
+            <EXP_DATEANNIVERSAIRE/>
+            <EXP_DATEARCHIVAGE/>
+            <EXP_IDYLIS_HMB_CONTACT_AGENDAS/>
+            <EXP_IDYLIS_HMB_CONTACT_CARTEVOEUX/>
+            <EXP_IDYLIS_HMB_CONTACT_CHAMPAGNE/>
+            <EXP_IDYLIS_HMB_CONTACT_CHOCOLATS/>
+            <EXP_IDYLIS_HMB_CONTACT_CORBEILLE/>
+            <EXP_IDYLIS_HMB_CONTACT_MANIFESTATIONS/>
+            <EXP_IDYLIS_HMB_CONTACT_VIP/>
+            <EXP_IDYLIS_HMB_EFFECTIF_CADRES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_ENSEMBLE/>
+            <EXP_IDYLIS_HMB_EFFECTIF_NONCADRES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_RETRAITES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_TNS/>
+            <EXP_IDYLIS_HMB_EFFECTIF_VRP/>
+            <EXP_IDYLIS_HMB_EFFECTIFS/>
+            <EXP_IDYLISCOMPTEURLIGNE > 1 </EXP_IDYLISCOMPTEURLIGNE >
+            <EXP_SITE/>
+            <EXP_SOCIETE > AUGEREAUSARL </EXP_SOCIETE >
+            <EXP_TVA_INTRA > FR78523000000 </EXP_TVA_INTRA >
+            </FICHE >
+            </FB_CONTACTS >";
 
             if (RefContact != null && RefContact != "")
             {
-                ClientXML = ClientXML.Replace("[REFONTACT]", RefContact);
+                ClientXML = ClientXML.Replace("[REFCONTACT]", RefContact);
             }
 
             if (CodeClient != null && CodeClient != "")
@@ -461,17 +530,154 @@ namespace Dailybiz_API.Controllers
                 ClientXML = ClientXML.Replace("[PAYS]", Pays);
             }
 
+            API.setSession();
+            string cRetour = API.idev.InsererTable(ClientXML);
+            return cRetour;
+        }
 
+        [HttpPost]
+        [Route("api/ContactDuClient/Add")]
+        public string MajContact(Contact contact)
+        {
 
+            string ClientXML = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            <FB_CONTACTS >
+            <FICHE >
+            <ADRESSE1>[ADRESSE1]</ADRESSE1>
+            <ADRESSE2/>
+            <ADRESSE3/>
+            <ADRESSEPRICINPAL/>
+            <CIVILITE/>
+            <CODECLIENT >[CODECLIENT] </CODECLIENT >
+            <CODEORIGINE > ORIGINE01 </CODEORIGINE >
+            <COMMENTAIRE/>
+            <CP>[CP]</CP>
+            <CRITERE1/>
+            <CRITERE2/>
+            <CRITERE3/>
+            <CRITERE4/>
+            <CRITERE5/>
+            <CRITERE6/>
+            <CRITERE7/>
+            <CRITERE8/>
+            <CRITERE9/>
+            <EMAIL>[EMAIL]</EMAIL >
+            <FAX > 0133120001 </FAX >
+            <FICHIERARCHIVER/>
+            <FONCTION>[FONCTION]</FONCTION>
+            <IDE_REFUTILISATEUR/>
+            <IDENTIFIANTSKYPE/>
+            <MOBILE/>
+            <NOM>[NOM]</NOM>
+            <NUMEROSKYPE/>
+            <PAYS>[PAYS]</PAYS>
+            <PRENOM>[PRENOM]</PRENOM>
+            <PRONTO_RAISONSOCIALE/>
+            <PRONTO_TYPELIVRAISON/>
+            <REFCONTACT>[REFCONTACT]</REFCONTACT>
+            <REFDUPLICATION/>
+            <REFENVOI/>
+            <TEL>[TEL]</TEL>
+            <TRAITEMENT/>
+            <VILLE>[VILLE]</VILLE>
+            <XPE_REFUTILISATEUR/>
+            <EXP_CLIENTARCHIVE > NON </EXP_CLIENTARCHIVE >
+            <EXP_CODEFAMILLECLIENT > FAM_CLI03 </EXP_CODEFAMILLECLIENT >
+            <EXP_CODEVENDEUR > VENDEUR02 </EXP_CODEVENDEUR >
+            <EXP_CT1FICHE/>
+            <EXP_CT2FICHE/>
+            <EXP_CT3FICHE/>
+            <EXP_CT4FICHE/>
+            <EXP_CT5FICHE/>
+            <EXP_CT6FICHE/>
+            <EXP_CT7FICHE/>
+            <EXP_CT8FICHE/>
+            <EXP_CT9FICHE/>
+            <EXP_DATEANNIVERSAIRE/>
+            <EXP_DATEARCHIVAGE/>
+            <EXP_IDYLIS_HMB_CONTACT_AGENDAS/>
+            <EXP_IDYLIS_HMB_CONTACT_CARTEVOEUX/>
+            <EXP_IDYLIS_HMB_CONTACT_CHAMPAGNE/>
+            <EXP_IDYLIS_HMB_CONTACT_CHOCOLATS/>
+            <EXP_IDYLIS_HMB_CONTACT_CORBEILLE/>
+            <EXP_IDYLIS_HMB_CONTACT_MANIFESTATIONS/>
+            <EXP_IDYLIS_HMB_CONTACT_VIP/>
+            <EXP_IDYLIS_HMB_EFFECTIF_CADRES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_ENSEMBLE/>
+            <EXP_IDYLIS_HMB_EFFECTIF_NONCADRES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_RETRAITES/>
+            <EXP_IDYLIS_HMB_EFFECTIF_TNS/>
+            <EXP_IDYLIS_HMB_EFFECTIF_VRP/>
+            <EXP_IDYLIS_HMB_EFFECTIFS/>
+            <EXP_IDYLISCOMPTEURLIGNE > 1 </EXP_IDYLISCOMPTEURLIGNE >
+            <EXP_SITE/>
+            <EXP_SOCIETE > AUGEREAUSARL </EXP_SOCIETE >
+            <EXP_TVA_INTRA > FR78523000000 </EXP_TVA_INTRA >
+            </FICHE >
+            </FB_CONTACTS >";
+
+            if (contact.RefContact != null && contact.RefContact != "")
+            {
+                ClientXML = ClientXML.Replace("[REFCONTACT]", contact.RefContact);
+            }
+
+            if (contact.CodeClient != null && contact.CodeClient != "")
+            {
+                ClientXML = ClientXML.Replace("[CODECLIENT]", contact.CodeClient);
+            }
+            if (contact.Nom != null && contact.Nom != "")
+            {
+                ClientXML = ClientXML.Replace("[NOM]", contact.Nom);
+            }
+            if (contact.Prenom != null && contact.Prenom != "")
+            {
+                ClientXML = ClientXML.Replace("[PRENOM]", contact.Prenom);
+            }
+            if (contact.Tel != null && contact.Tel != "")
+            {
+                ClientXML = ClientXML.Replace("[TEL]", contact.Tel);
+            }
+            if (contact.Email != null && contact.Email != "")
+            {
+                ClientXML = ClientXML.Replace("[EMAIL]", contact.Email);
+            }
+            if (contact.Fonction != null && contact.Fonction != "")
+            {
+                ClientXML = ClientXML.Replace("[FONCTION]", contact.Fonction);
+            }
+            if (contact.Adresse1 != null && contact.Adresse1 != "")
+            {
+                ClientXML = ClientXML.Replace("[ADRESSE1]", contact.Adresse1);
+            }
+
+            if (contact.Ville != null && contact.Ville != "")
+            {
+                ClientXML = ClientXML.Replace("[VILLE]", contact.Ville);
+            }
+            if (contact.CP != null && contact.CP != "")
+            {
+                ClientXML = ClientXML.Replace("[CP]", contact.CP);
+            }
+            if (contact.Pays != null && contact.Pays != "")
+            {
+                ClientXML = ClientXML.Replace("[PAYS]", contact.Pays);
+            }
 
             API.setSession();
-
             string cRetour = API.idev.InsererTable(ClientXML);
+            return cRetour;
+        }
+
+        // Supprimer un client
+        [HttpGet]
+        [Route("api/ContactDuClient/Delete/{refContact}")]
+        public string DeleteContact(string refContact)
+        {
+            API.setSession();
+            string cRetour = API.idev.SuppresionTable("FB_Contacts", refContact);
             return cRetour;
         }
 
     }
 }
  
-    }
-}
